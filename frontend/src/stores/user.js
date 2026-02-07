@@ -13,7 +13,7 @@ export const useUserStore = defineStore('user', () => {
     loading.value = true
     try {
       const res = await login(username, password)
-      token.value = res.access_token
+      token.value = res.token || res.access_token
       localStorage.setItem('token', token.value)
       
       // Get user profile
@@ -30,18 +30,30 @@ export const useUserStore = defineStore('user', () => {
   async function doRegister(username, password, invitationCode) {
     loading.value = true
     try {
-      // 1. 先注册
-      await register(username, password, invitationCode)
-      console.log('注册成功，开始自动登录...')
+      const res = await register(username, password, invitationCode)
+      console.log('Register response:', res)
       
-      // 2. 自动登录
-      const loginResult = await doLogin(username, password)
+      // 尝试从响应中获取 token
+      // 兼容两种格式：res.token 或 res.access_token
+      token.value = res.token || res.access_token
       
-      if (loginResult.success) {
+      if (token.value) {
+        // 保存 token
+        localStorage.setItem('token', token.value)
+        console.log('Token saved:', token.value)
+        
+        // 获取用户信息
+        try {
+          userInfo.value = await getProfile()
+        } catch (e) {
+          console.error('Failed to get profile:', e)
+        }
+        
         return { success: true }
       } else {
-        // 注册成功但自动登录失败
-        return { success: false, message: '注册成功，请重新登录' }
+        // 如果没有返回 token，尝试自动登录
+        console.log('No token in register response, trying auto-login...')
+        return await doLogin(username, password)
       }
     } catch (error) {
       console.error('Register error:', error)

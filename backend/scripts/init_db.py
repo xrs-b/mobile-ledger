@@ -9,30 +9,29 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from sqlalchemy.orm import Session
 from app.database import engine, Base, get_db
-from app.models import User, Category, SystemConfig, InvitationCode
+from app.models import User, Category, SystemConfig, InvitationCode, Project
 
 
-def init_db():
-    """初始化数据库"""
-    print("🚀 开始初始化数据库...")
+def init_db(force=False):
+    """初始化数据库
     
-    # 创建所有表
-    Base.metadata.create_all(bind=engine)
-    print("✅ 数据表创建完成")
+    Args:
+        force: 是否强制重新初始化（删除所有数据）
+    """
+    print("🚀 开始初始化数据库...")
     
     # 获取数据库会话
     db = next(get_db())
     
     try:
-        # 检查是否已有分类（如果已有分类则跳过）
+        # 检查是否已有分类
         existing_categories = db.query(Category).count()
-        if existing_categories > 0:
+        
+        if existing_categories > 0 and not force:
             print(f"⚠️ 数据库已有 {existing_categories} 个分类，跳过初始化")
-            
             # 但检查是否有邀请码
             existing_codes = db.query(InvitationCode).count()
             if existing_codes == 0:
-                # 添加默认邀请码
                 default_invitation = InvitationCode(
                     code="admin123",
                     is_used=False,
@@ -41,17 +40,24 @@ def init_db():
                 db.add(default_invitation)
                 db.commit()
                 print("✅ 默认邀请码已添加: admin123")
-            
             return
+        
+        # 创建所有表
+        Base.metadata.create_all(bind=engine)
+        print("✅ 数据表创建完成")
         
         # 检查是否已有用户
         existing_users = db.query(User).count()
         
-        # 创建默认邀请码（如果有用户就用第一个用户的ID）
+        # 创建默认邀请码
         first_user_id = 1
         if existing_users > 0:
             first_user = db.query(User).first()
             first_user_id = first_user.id
+        
+        # 清除旧邀请码（如果强制初始化）
+        if force:
+            db.query(InvitationCode).delete()
         
         default_invitation = InvitationCode(
             code="admin123",
@@ -79,6 +85,9 @@ def init_db():
             ),
         ]
         for config in configs:
+            if force:
+                # 删除旧的配置
+                db.query(SystemConfig).filter_by(config_key=config.config_key).delete()
             db.add(config)
         
         # 创建默认分类（一级）
@@ -98,17 +107,17 @@ def init_db():
             ("收入", "💵", "income"),
         ]
         
-        category_map = {}  # 保存一级分类ID
+        category_map = {}
         for name, icon, ctype in first_level_categories:
             cat = Category(
                 name=name,
                 icon=icon,
                 type=ctype,
                 is_system=True,
-                user_id=None,  # 系统分类
+                user_id=None,
             )
             db.add(cat)
-            db.flush()  # 获取ID
+            db.flush()
             category_map[f"{name}_{ctype}"] = cat.id
         
         # 创建二级分类
@@ -127,7 +136,6 @@ def init_db():
             "其他": ["临时", "未知"],
         }
         
-        # Emoji映射
         emoji_map = {
             "早餐": "🥪", "午餐": "🍱", "晚餐": "🍲", "下午茶": "☕", "夜宵": "🌙",
             "奶茶咖啡": "🧋", "零食": "🍪", "外卖": "🥡",
@@ -181,10 +189,33 @@ def init_db():
                 )
                 db.add(cat)
         
+        # 创建示例项目
+        example_projects = [
+            {
+                "name": "示例项目",
+                "description": "这是一个示例项目，用于演示项目记账功能",
+                "budget": 5000.00,
+                "start_date": "2026-01-01",
+                "end_date": "2026-12-31",
+            }
+        ]
+        
+        for proj in example_projects:
+            project = Project(
+                name=proj["name"],
+                description=proj["description"],
+                budget=proj["budget"],
+                start_date=proj["start_date"],
+                end_date=proj["end_date"],
+                user_id=None,  # 系统项目
+            )
+            db.add(project)
+        
         db.commit()
         print("✅ 默认分类初始化完成")
         print("✅ 默认邀请码: admin123")
         print("✅ 系统配置初始化完成")
+        print("✅ 示例项目创建完成")
         
     except Exception as e:
         db.rollback()
@@ -195,4 +226,5 @@ def init_db():
 
 
 if __name__ == "__main__":
-    init_db()
+    force = "--force" in sys.argv or "-f" in sys.argv
+    init_db(force=force)

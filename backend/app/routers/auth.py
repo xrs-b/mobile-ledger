@@ -75,7 +75,17 @@ async def register(request: RegisterRequest, db: Session = Depends(get_db)):
     
     db.commit()
     
+    # 5. 生成Token（注册后直接返回token）
+    token_data = {
+        "sub": user.id,
+        "username": user.username,
+        "is_admin": user.is_admin
+    }
+    token = create_access_token(token_data)
+    
     return RegisterResponse(
+        access_token=token,
+        token_type="bearer",
         user_id=user.id,
         username=user.username,
         is_admin=user.is_admin,

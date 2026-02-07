@@ -10,6 +10,13 @@ const router = useRouter()
 const currentMonth = ref(getCurrentMonth())
 const overview = ref(null)
 const loading = ref(false)
+const activeTab = ref(0)
+
+const tabs = [
+  { name: '首页', icon: 'home-o' },
+  { name: '项目', icon: 'todo-list-o' },
+  { name: '我的', icon: 'user-o' }
+]
 
 const monthIncome = computed(() => overview.value?.month_income || 0)
 const monthExpense = computed(() => overview.value?.month_expense || 0)
@@ -47,6 +54,24 @@ function goToStatistics() {
 
 function goToBudget() {
   router.push('/budget')
+}
+
+function goToProjects() {
+  router.push('/projects')
+}
+
+function goToProfile() {
+  router.push('/profile')
+}
+
+function onTabChange(index) {
+  if (index === 1) {
+    goToProjects()
+  } else if (index === 2) {
+    goToProfile()
+  } else {
+    // 首页
+  }
 }
 
 onMounted(() => {
@@ -104,12 +129,19 @@ onMounted(() => {
           <div class="action-icon">📊</div>
           <div class="action-text">统计</div>
         </div>
-        <div class="action-item" @click="goToBudget">
-          <div class="action-icon">💰</div>
-          <div class="action-text">预算</div>
+        <div class="action-item" @click="goToProjects">
+          <div class="action-icon">📋</div>
+          <div class="action-text">项目</div>
         </div>
       </div>
     </div>
+
+    <!-- TabBar -->
+    <van-tabbar v-model="activeTab" @change="onTabChange">
+      <van-tabbar-item name="dashboard" icon="home-o">首页</van-tabbar-item>
+      <van-tabbar-item name="projects" icon="todo-list-o">项目</van-tabbar-item>
+      <van-tabbar-item name="profile" icon="user-o">我的</van-tabbar-item>
+    </van-tabbar>
   </div>
 </template>
 

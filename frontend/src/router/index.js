@@ -48,6 +48,12 @@ const routes = [
     meta: { title: '预算', requiresAuth: true }
   },
   {
+    path: '/projects',
+    name: 'Projects',
+    component: () => import('@/views/Projects.vue'),
+    meta: { title: '项目', requiresAuth: true }
+  },
+  {
     path: '/profile',
     name: 'Profile',
     component: () => import('@/views/Profile.vue'),

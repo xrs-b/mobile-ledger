@@ -8,9 +8,14 @@ import { logout } from '@/api/auth'
 const router = useRouter()
 const userStore = useUserStore()
 const showLogoutDialog = ref(false)
+const activeTab = ref(2)
 
-function goToProfile() {
-  // Profile is current page
+function onTabChange(index) {
+  if (index === 0) {
+    router.push('/dashboard')
+  } else if (index === 1) {
+    router.push('/projects')
+  }
 }
 
 function handleLogout() {
@@ -46,9 +51,6 @@ function about() {
 
 <template>
   <div class="profile-page">
-    <!-- Header -->
-    <van-nav-bar title="我的" />
-
     <!-- User Info -->
     <div class="user-card">
       <div class="avatar">👤</div>
@@ -66,7 +68,7 @@ function about() {
     <!-- Menu List -->
     <div class="menu-section">
       <van-cell-group inset>
-        <van-cell title="个人信息" is-link @click="goToProfile">
+        <van-cell title="个人信息" is-link @click="() => {}">
           <template #icon>
             <span class="menu-icon">👤</span>
           </template>
@@ -105,19 +107,10 @@ function about() {
     />
 
     <!-- TabBar -->
-    <van-tabbar v-model="active" route>
-      <van-tabbar-item name="dashboard" to="/dashboard" icon="home-o">
-        首页
-      </van-tabbar-item>
-      <van-tabbar-item name="records" to="/records" icon="orders-o">
-        账单
-      </van-tabbar-item>
-      <van-tabbar-item name="statistics" to="/statistics" icon="bar-chart-o">
-        统计
-      </van-tabbar-item>
-      <van-tabbar-item name="profile" to="/profile" icon="user-o">
-        我的
-      </van-tabbar-item>
+    <van-tabbar v-model="activeTab" @change="onTabChange">
+      <van-tabbar-item name="dashboard" icon="home-o">首页</van-tabbar-item>
+      <van-tabbar-item name="projects" icon="todo-list-o">项目</van-tabbar-item>
+      <van-tabbar-item name="profile" icon="user-o">我的</van-tabbar-item>
     </van-tabbar>
   </div>
 </template>
@@ -128,7 +121,7 @@ import { ref } from 'vue'
 export default {
   name: 'Profile',
   setup() {
-    const active = ref('profile')
+    const active = ref(2)
     return { active }
   }
 }

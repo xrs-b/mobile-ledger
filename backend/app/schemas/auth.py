@@ -24,6 +24,8 @@ class LoginRequest(BaseModel):
 
 class RegisterResponse(BaseModel):
     """注册响应"""
+    access_token: Optional[str] = None
+    token_type: str = "bearer"
     user_id: int
     username: str
     is_admin: bool
