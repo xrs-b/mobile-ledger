@@ -15,7 +15,7 @@ from fastapi.responses import JSONResponse
 from app.database import engine, Base
 
 # 路由导入
-from app.routers import auth, category, record, project, statistics, budget
+from app.routers import auth, category, record, project, statistics, budget, invitation, admin
 
 
 async def log_requests_middleware(request: Request, call_next: Callable):
@@ -110,6 +110,8 @@ app.include_router(record.router, prefix="/api/v1")
 app.include_router(project.router, prefix="/api/v1")
 app.include_router(statistics.router, prefix="/api/v1")
 app.include_router(budget.router, prefix="/api/v1")
+app.include_router(invitation.router, prefix="/api/v1")
+app.include_router(admin.router, prefix="/api/v1")
 
 
 # 健康检查接口

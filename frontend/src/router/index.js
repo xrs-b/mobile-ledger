@@ -54,6 +54,12 @@ const routes = [
     meta: { title: '项目', requiresAuth: true }
   },
   {
+    path: '/admin',
+    name: 'Admin',
+    component: () => import('@/views/Admin.vue'),
+    meta: { title: '管理后台', requiresAuth: true, requiresAdmin: true }
+  },
+  {
     path: '/profile',
     name: 'Profile',
     component: () => import('@/views/Profile.vue'),
@@ -67,14 +73,30 @@ const router = createRouter({
 })
 
 // Navigation guard
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   document.title = to.meta.title || 'Mobile Ledger'
   
   const token = localStorage.getItem('token')
   
   if (to.meta.requiresAuth && !token) {
     next({ name: 'Login', query: { redirect: to.fullPath } })
-  } else if ((to.name === 'Login' || to.name === 'Register') && token) {
+    return
+  }
+  
+  if (to.meta.requiresAdmin && token) {
+    // 检查是否是管理员
+    try {
+      const userStore = (await import('@/stores/user')).useUserStore()
+      if (!userStore.userInfo?.is_admin) {
+        next({ name: 'Dashboard' })
+        return
+      }
+    } catch (e) {
+      // 忽略错误
+    }
+  }
+  
+  if ((to.name === 'Login' || to.name === 'Register') && token) {
     next({ name: 'Dashboard' })
   } else {
     next()

@@ -10,6 +10,10 @@ const userStore = useUserStore()
 const showLogoutDialog = ref(false)
 const activeTab = ref(2)
 
+function goToAdmin() {
+  router.push('/admin')
+}
+
 function onTabChange(index) {
   if (index === 0) {
     router.push('/dashboard')
@@ -71,6 +75,16 @@ function about() {
         <van-cell title="个人信息" is-link @click="() => {}">
           <template #icon>
             <span class="menu-icon">👤</span>
+          </template>
+        </van-cell>
+        <van-cell 
+          v-if="userStore.userInfo?.is_admin" 
+          title="管理后台" 
+          is-link 
+          @click="goToAdmin"
+        >
+          <template #icon>
+            <span class="menu-icon">⚙️</span>
           </template>
         </van-cell>
         <van-cell title="清除缓存" is-link @click="clearCache">

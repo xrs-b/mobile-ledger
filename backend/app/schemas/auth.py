@@ -60,3 +60,9 @@ class UserResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class UserListResponse(BaseModel):
+    """用户列表响应"""
+    total: int
+    users: List[UserResponse]
