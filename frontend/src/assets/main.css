@@ -1,0 +1,90 @@
+/* Mobile Ledger - Global Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f7f8fa;
+  color: #323233;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Common utilities */
+.container {
+  padding: 16px;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.page {
+  min-height: 100vh;
+  background-color: #f7f8fa;
+}
+
+.card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.card-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #323233;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.text-primary {
+  color: #1989fa;
+}
+
+.text-success {
+  color: #07c160;
+}
+
+.text-danger {
+  color: #ee0a24;
+}
+
+.text-gray {
+  color: #969799;
+}
+
+.text-large {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.text-medium {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.mb-8 { margin-bottom: 8px; }
+.mb-12 { margin-bottom: 12px; }
+.mb-16 { margin-bottom: 16px; }
+.mt-8 { margin-top: 8px; }
+.mt-16 { margin-top: 16px; }
