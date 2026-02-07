@@ -18,7 +18,6 @@
     "pinia": "^3.0.4",
     "vant": "^4.9.22",
     "vite": "^7.2.4",
-    "vite-plugin-style-import": "^2.0.0",
     "vue-router": "^4.6.4",
     "postcss-pxtorem": "^6.0.0",
     "amfe-flexible": "^2.2.1"
