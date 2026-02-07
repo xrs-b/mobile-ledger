@@ -24,17 +24,39 @@ def init_db():
     db = next(get_db())
     
     try:
-        # 检查是否已有数据
-        existing_users = db.query(User).count()
-        if existing_users > 0:
-            print(f"⚠️ 数据库已有 {existing_users} 个用户，跳过初始化")
+        # 检查是否已有分类（如果已有分类则跳过）
+        existing_categories = db.query(Category).count()
+        if existing_categories > 0:
+            print(f"⚠️ 数据库已有 {existing_categories} 个分类，跳过初始化")
+            
+            # 但检查是否有邀请码
+            existing_codes = db.query(InvitationCode).count()
+            if existing_codes == 0:
+                # 添加默认邀请码
+                default_invitation = InvitationCode(
+                    code="admin123",
+                    is_used=False,
+                    created_by=1,
+                )
+                db.add(default_invitation)
+                db.commit()
+                print("✅ 默认邀请码已添加: admin123")
+            
             return
         
-        # 创建默认邀请码
+        # 检查是否已有用户
+        existing_users = db.query(User).count()
+        
+        # 创建默认邀请码（如果有用户就用第一个用户的ID）
+        first_user_id = 1
+        if existing_users > 0:
+            first_user = db.query(User).first()
+            first_user_id = first_user.id
+        
         default_invitation = InvitationCode(
             code="admin123",
             is_used=False,
-            created_by=1,  # 第一个用户会使用这个邀请码
+            created_by=first_user_id,
         )
         db.add(default_invitation)
         

@@ -20,6 +20,7 @@ export const useUserStore = defineStore('user', () => {
       userInfo.value = await getProfile()
       return { success: true }
     } catch (error) {
+      console.error('Login error:', error)
       return { success: false, message: error.message || '登录失败' }
     } finally {
       loading.value = false
@@ -29,10 +30,21 @@ export const useUserStore = defineStore('user', () => {
   async function doRegister(username, password, invitationCode) {
     loading.value = true
     try {
+      // 1. 先注册
       await register(username, password, invitationCode)
-      // Auto login after register
-      return await doLogin(username, password)
+      console.log('注册成功，开始自动登录...')
+      
+      // 2. 自动登录
+      const loginResult = await doLogin(username, password)
+      
+      if (loginResult.success) {
+        return { success: true }
+      } else {
+        // 注册成功但自动登录失败
+        return { success: false, message: '注册成功，请重新登录' }
+      }
     } catch (error) {
+      console.error('Register error:', error)
       return { success: false, message: error.message || '注册失败' }
     } finally {
       loading.value = false
