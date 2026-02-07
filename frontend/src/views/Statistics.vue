@@ -1,8 +1,8 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import { Toast } from 'vant'
-import { formatAmount, getAmountColor } from '@/utils/amount'
-import { formatMonth, getCurrentMonth } from '@/utils/date'
+import { formatAmount } from '@/utils/amount'
+import { getCurrentMonth } from '@/utils/date'
 import * as echarts from 'echarts'
 import { getStatisticsOverview, getStatisticsCategory, getStatisticsTrend } from '@/api/statistics'
 
@@ -154,11 +154,6 @@ function renderCategoryChart() {
   })
 }
 
-function onMonthChange(value) {
-  currentMonth.value = value
-  fetchData()
-}
-
 onMounted(() => {
   fetchData()
 })
@@ -169,21 +164,9 @@ onMounted(() => {
     <!-- Header -->
     <van-nav-bar title="统计" />
     
-    <!-- Month Picker -->
-    <div class="month-picker">
-      <van-cell 
-        title="月份" 
-        :value="currentMonth" 
-        is-link 
-        @click="() => {}"
-      />
-      <van-popup v-model:show="false" position="bottom">
-        <van-picker
-          :columns="[]"
-          @confirm="onMonthChange"
-          show-toolbar
-        />
-      </van-popup>
+    <!-- Month Display -->
+    <div class="month-display">
+      <span class="month-label">{{ currentMonth }}</span>
     </div>
 
     <!-- Tabs -->
@@ -257,8 +240,16 @@ onMounted(() => {
   padding-bottom: 60px;
 }
 
-.month-picker {
-  margin-bottom: 8px;
+.month-display {
+  padding: 12px 16px;
+  background: #fff;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.month-label {
+  font-size: 16px;
+  font-weight: 600;
+  color: #323233;
 }
 
 .stats-tabs {
