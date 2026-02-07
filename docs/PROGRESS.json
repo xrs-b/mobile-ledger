@@ -354,26 +354,29 @@
     },
     "Phase_5": {
       "status": "completed",
-      "completed_at": "2026-02-07T16:00:00Z",
-      "summary": "项目文档和部署配置完成",
+      "completed_at": "2026-02-07T16:15:00Z",
+      "summary": "一键部署脚本和完整部署教程",
       "tasks": {
         "5.1": {
           "status": "completed",
           "started_at": "2026-02-07T15:58:00Z",
-          "completed_at": "2026-02-07T16:00:00Z",
+          "completed_at": "2026-02-07T16:15:00Z",
           "checklist": [
             "[x] 创建根目录README",
             "[x] 更新Docker配置",
             "[x] 创建docker-compose.yml",
-            "[x] 部署文档"
+            "[x] 创建一键部署脚本 deploy.sh",
+            "[x] 创建完整部署教程 docs/DEPLOYMENT.md"
           ],
           "files_created": [
             "README.md",
             "docker-compose.yml",
             "frontend/Dockerfile",
-            "frontend/nginx.conf"
+            "frontend/nginx.conf",
+            "deploy.sh",
+            "docs/DEPLOYMENT.md"
           ],
-          "notes": "Phase 5 部署配置全部完成"
+          "notes": "一键部署脚本支持 Ubuntu/CentOS/Debian，包含 Docker/手动部署、Nginx 配置、HTTPS 配置、故障排查"
         }
       }
     }
