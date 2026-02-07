@@ -1,34 +1,13 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import AutoImport from 'AutoImport'
-import styleImport from 'vite-plugin-style-import'
 import { resolve } from 'path'
 import pxtorem from 'postcss-pxtorem'
+import styleImport from 'vite-plugin-style-import'
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
     vue(),
-    AutoImport({
-      resolvers: [
-        (name) => {
-          if (name === 'VanIcon') {
-            return { importName: name, path: 'vant' }
-          }
-          if (['Button', 'Cell', 'CellGroup', 'Toast', 'Dialog', 'Notify'].includes(name)) {
-            return { importName: name, path: 'vant' }
-          }
-          return { name, package: 'vant' }
-        }
-      ],
-      imports: ['vue', 'vue-router', 'pinia'],
-      dts: 'src/auto-imports.d.ts',
-    }),
-    styleImport({
-      resolvers: [
-        { resolveStyle(name) { return `vant/es/${name}/style/index.js` } },
-      ],
-    }),
   ],
   resolve: {
     alias: {
@@ -39,7 +18,7 @@ export default defineConfig({
     postcss: {
       plugins: [
         pxtorem({
-          rootValue: 37.5, // 基于375px设计稿
+          rootValue: 37.5,
           propList: ['*'],
           selectorBlackList: ['.norem'],
           unitPrecision: 5,
